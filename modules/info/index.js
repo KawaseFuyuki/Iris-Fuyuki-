@@ -172,7 +172,6 @@ async function cmdPing(message, _args, _config, client) {
     title: '🏓 Pong!',
     fields: [
       { name: '<:tickwa:1500815942576504974> WebSocket', value: `\`${client.ws.ping}ms\``, inline: true },
-      { name: '↩️ Roundtrip', value: `\`${roundtrip}ms\``, inline: true },
     ]
   })] });
 }
