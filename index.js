@@ -3,6 +3,7 @@ import {
 } from 'discord.js';
 import express from 'express';
 import { getGuildConfig } from './database.js';
+import mongoose from 'mongoose';
 import { handleHelp } from './modules/help/index.js';
 import * as RR from './modules/reactionroles/index.js';
 import * as MOD from './modules/moderation/index.js';
@@ -24,6 +25,13 @@ app.get('/health', (req, res) => {
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`✅ Keep-alive server running on port ${PORT}`);
 });
+// --- MongoDB Connect ---
+mongoose.connect(process.env.MONGO_URL).then(() => {
+    console.log('✅ MongoDB Connected');
+}).catch(err => {
+    console.log('❌ MongoDB Error:', err);
+});
+// -----------------------
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 if (!TOKEN) throw new Error('DISCORD_BOT_TOKEN is not set!');
