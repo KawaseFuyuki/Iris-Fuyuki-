@@ -29,9 +29,10 @@ export const slashCommands = [
       .addStringOption(o => o.setName('category').setDescription('Category ID for ticket channels').setRequired(false))
       .addRoleOption(o => o.setName('role').setDescription('Staff role to ping').setRequired(false))
       .addStringOption(o => o.setName('emoji').setDescription('Button emoji').setRequired(false))
+      .addStringOption(o => o.setName('button_name').setDescription('Button ka naam').setRequired(false))
       .addStringOption(o => o.setName('color').setDescription('Embed color hex').setRequired(false))
       .addStringOption(o => o.setName('image').setDescription('Image URL').setRequired(false)))
-    .addSubcommand(s => s.setName('addbutton').setDescription('Add extra button to ticket panel (max 3)')
+    .addSubcommand(s => s.setName('addbutton').setDescription('Add extra button to ticket panel (max 4)')
       .addStringOption(o => o.setName('label').setDescription('Button label').setRequired(true))
       .addStringOption(o => o.setName('emoji').setDescription('Button emoji').setRequired(false)))
     .addSubcommand(s => s.setName('close').setDescription('Close this ticket channel'))
@@ -87,17 +88,18 @@ export async function handleSlash(interaction) {
       const role = interaction.options.getRole('role') || null;
       const emoji = interaction.options.getString('emoji') || '🎫';
       const color = interaction.options.getString('color') || '#FFD700';
+      const buttonName = interaction.options.getString('button_name') || 'Create Ticket';
       const image = interaction.options.getString('image') || null;
 
       setGuildConfig(guild.id, {
         ticket_channel: channel.id, ticket_category: category,
         ticket_role: role?.id || null, ticket_emoji: emoji,
         ticket_title: title, ticket_description: description,
-        ticket_color: color, ticket_image: image, ticket_buttons: []
+        ticket_color: color, ticket_image: image, ticket_buttons: [], ticket_button_name: buttonName
       });
 
       const embed = makeEmbed({ title, description, color: parseHex(color), image });
-      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel('Create Ticket').setEmoji(emoji).setStyle(ButtonStyle.Primary);
+      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel(buttonName).setEmoji(emoji).setStyle(ButtonStyle.Primary);
       await channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(btn)] });
       return interaction.reply({ embeds: [successEmbed(`Ticket panel sent to ${channel}!`)], ephemeral: true });
     }
@@ -107,7 +109,7 @@ export async function handleSlash(interaction) {
       const emoji = interaction.options.getString('emoji') || null;
       const config = getGuildConfig(guild.id);
       const buttons = Array.isArray(config.ticket_buttons) ? config.ticket_buttons : [];
-      if (buttons.length >= 3) return interaction.reply({ embeds: [errorEmbed('Max 3 extra buttons allowed.')], ephemeral: true });
+      if (buttons.length >= 4) return interaction.reply({ embeds: [errorEmbed('Max 4 extra buttons allowed.')], ephemeral: true });
       buttons.push({ label, emoji });
       setGuildConfig(guild.id, { ticket_buttons: buttons });
 
@@ -115,7 +117,7 @@ export async function handleSlash(interaction) {
         try {
           const ch = await guild.channels.fetch(config.ticket_channel);
           const embed = makeEmbed({ title: config.ticket_title, description: config.ticket_description, color: parseHex(config.ticket_color), image: config.ticket_image });
-          const mainBtn = new ButtonBuilder().setCustomId('ticket_create').setLabel('Create Ticket').setEmoji(config.ticket_emoji || '🎫').setStyle(ButtonStyle.Primary);
+          const mainBtn = new ButtonBuilder().setCustomId('ticket_create').setLabel(config.ticket_button_name || 'Create Ticket').setEmoji(config.ticket_emoji || '🎫').setStyle(ButtonStyle.Primary);
           const extraBtns = buttons.map((b, i) => {
             const bb = new ButtonBuilder().setCustomId(`ticket_extra_${i}`).setLabel(b.label).setStyle(ButtonStyle.Secondary);
             if (b.emoji) bb.setEmoji(b.emoji);
