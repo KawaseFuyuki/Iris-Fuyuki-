@@ -49,6 +49,7 @@ db.run(`
     ticket_color TEXT DEFAULT '#FFD700',
     ticket_image TEXT,
     ticket_buttons TEXT DEFAULT '[]',
+    ticket_button_name TEXT DEFAULT 'Create Ticket',
     antilink_enabled INTEGER DEFAULT 0,
     antinuke_enabled INTEGER DEFAULT 0,
     disabled_commands TEXT DEFAULT '[]',
