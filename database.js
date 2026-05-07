@@ -30,7 +30,7 @@ process.on('exit', saveDb);
 process.on('SIGINT', () => { saveDb(); process.exit(0); });
 process.on('SIGTERM', () => { saveDb(); process.exit(0); });
 
-db.exec(`
+db.run(`
   CREATE TABLE IF NOT EXISTS guild_config (
     guild_id TEXT PRIMARY KEY,
     prefix TEXT DEFAULT '&',
@@ -43,27 +43,18 @@ db.exec(`
     ticket_channel TEXT,
     ticket_category TEXT,
     ticket_role TEXT,
-    ticket_emoji TEXT DEFAULT ':ticket:',
+    ticket_emoji TEXT DEFAULT '🎫',
     ticket_title TEXT,
     ticket_description TEXT,
     ticket_color TEXT DEFAULT '#FFD700',
     ticket_image TEXT,
     ticket_buttons TEXT DEFAULT '[]',
-    ticket_button_name TEXT DEFAULT 'Create Ticket',
     antilink_enabled INTEGER DEFAULT 0,
     antinuke_enabled INTEGER DEFAULT 0,
     disabled_commands TEXT DEFAULT '[]',
     blacklist_words TEXT DEFAULT '[]'
-  )
+  );
 
-// Add missing columns to old database
-try {
-  db.run("ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'");
-  db.run("ALTER TABLE guild_config ADD COLUMN ticket_emoji TEXT DEFAULT ':ticket:'");
-  db.run("ALTER TABLE guild_config ADD COLUMN ticket_buttons TEXT DEFAULT '[]'");
-} catch (e) {
-  // Columns already exist, ignore error
-}
   CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
