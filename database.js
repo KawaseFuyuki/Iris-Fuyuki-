@@ -43,7 +43,7 @@ db.run(`
     ticket_channel TEXT,
     ticket_category TEXT,
     ticket_role TEXT,
-    ticket_emoji TEXT DEFAULT '🎫',
+    ticket_emoji TEXT DEFAULT ':ticket:',
     ticket_title TEXT,
     ticket_description TEXT,
     ticket_color TEXT DEFAULT '#FFD700',
@@ -59,7 +59,7 @@ db.run(`
 // Add missing columns to old database
 try {
   db.run("ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'");
-  db.run("ALTER TABLE guild_config ADD COLUMN ticket_emoji TEXT DEFAULT '🎫'");
+  db.run("ALTER TABLE guild_config ADD COLUMN ticket_emoji TEXT DEFAULT ':ticket:'");
   db.run("ALTER TABLE guild_config ADD COLUMN ticket_buttons TEXT DEFAULT '[]'");
 } catch (e) {
   // Columns already exist, ignore error
