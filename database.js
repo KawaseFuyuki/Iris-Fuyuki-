@@ -30,7 +30,7 @@ process.on('exit', saveDb);
 process.on('SIGINT', () => { saveDb(); process.exit(0); });
 process.on('SIGTERM', () => { saveDb(); process.exit(0); });
 
-db.run(`
+db.exec(`
   CREATE TABLE IF NOT EXISTS guild_config (
     guild_id TEXT PRIMARY KEY,
     prefix TEXT DEFAULT '&',
