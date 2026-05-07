@@ -54,7 +54,7 @@ db.run(`
     antinuke_enabled INTEGER DEFAULT 0,
     disabled_commands TEXT DEFAULT '[]',
     blacklist_words TEXT DEFAULT '[]'
-  );
+  )
 
 // Add missing columns to old database
 try {
