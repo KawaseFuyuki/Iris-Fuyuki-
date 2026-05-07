@@ -111,14 +111,21 @@ export async function handleSlash(interaction) {
       const buttons = Array.isArray(config.ticket_buttons) ? config.ticket_buttons : [];
       if (buttons.length >= 3) return interaction.reply({ embeds: [errorEmbed('Max 3 extra buttons allowed.')], ephemeral: true });
       buttons.push({ label, emoji });
-      setGuildConfig(guild.id, { ticket_buttons: buttons });
+      setGuildConfig(guild.id, {...config, ticket_buttons: buttons }); // Line 114 fix
 
-      if (config.ticket_channel) {
-        try {
-          const ch = await guild.channels.fetch(config.ticket_channel);
-          const embed = makeEmbed({ title: config.ticket_title, description: config.ticket_description, color: parseHex(config.ticket_color), image: config.ticket_image });
-          const mainBtn = new ButtonBuilder().setCustomId('ticket_create').setLabel('Create Ticket').setEmoji(config.ticket_emoji || '🎫').setStyle(ButtonStyle.Primary);
-          const extraBtns = buttons.map((b, i) => {
+if (config.ticket_channel) {
+  try {
+    const ch = await guild.channels.fetch(config.ticket_channel);
+    const embed = makeEmbed({ title: config.ticket_title, description: config.ticket_description, color: parseHex(config.ticket_color), image: config.ticket_image });
+    const mainBtn = new ButtonBuilder().setCustomId('ticket_create').setLabel(config.ticket_button_name || 'Create Ticket').setEmoji(config.ticket_emoji).setStyle(ButtonStyle.Primary); // Line 121 fix
+    const extraBtns = buttons.map((b, i) => {
+      const bb = new ButtonBuilder().setCustomId(`ticket_extra_${i}`).setLabel(b.label).setStyle(ButtonStyle.Secondary);
+      if (b.emoji) bb.setEmoji(b.emoji);
+      return bb;
+    });
+    await ch.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(mainBtn,...extraBtns)] });
+  } catch {}
+}
             const bb = new ButtonBuilder().setCustomId(`ticket_extra_${i}`).setLabel(b.label).setStyle(ButtonStyle.Secondary);
             if (b.emoji) bb.setEmoji(b.emoji);
             return bb;
