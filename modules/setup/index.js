@@ -30,6 +30,7 @@ export const slashCommands = [
       .addRoleOption(o => o.setName('role').setDescription('Staff role to ping').setRequired(false))
       .addStringOption(o => o.setName('emoji').setDescription('Button emoji').setRequired(false))
       .addStringOption(o => o.setName('color').setDescription('Embed color hex').setRequired(false))
+      .addStringOption(o => o.setName('button_name').setDescription('Button text').setRequired(false))
       .addStringOption(o => o.setName('image').setDescription('Image URL').setRequired(false)))
     .addSubcommand(s => s.setName('addbutton').setDescription('Add extra button to ticket panel (max 3)')
       .addStringOption(o => o.setName('label').setDescription('Button label').setRequired(true))
