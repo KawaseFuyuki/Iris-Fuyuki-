@@ -56,15 +56,14 @@ db.run(`
     blacklist_words TEXT DEFAULT '[]'
   );
 
-  // Add missing columns to old database
+// Add missing columns to old database
 try {
-  db.run(`ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'`);
-  db.run(`ALTER TABLE guild_config ADD COLUMN ticket_emoji TEXT DEFAULT '🎫'`);
-  db.run(`ALTER TABLE guild_config ADD COLUMN ticket_buttons TEXT DEFAULT '[]'`);
+  db.run("ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'");
+  db.run("ALTER TABLE guild_config ADD COLUMN ticket_emoji TEXT DEFAULT '🎫'");
+  db.run("ALTER TABLE guild_config ADD COLUMN ticket_buttons TEXT DEFAULT '[]'");
 } catch (e) {
   // Columns already exist, ignore error
 }
-
   CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
