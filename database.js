@@ -47,6 +47,7 @@ db.run(`
     ticket_title TEXT,
     ticket_description TEXT,
     ticket_color TEXT DEFAULT '#FFD700',
+    ticket_button_name TEXT DEFAULT 'Create Ticket',
     ticket_image TEXT,
     ticket_buttons TEXT DEFAULT '[]',
     antilink_enabled INTEGER DEFAULT 0,
@@ -54,6 +55,10 @@ db.run(`
     disabled_commands TEXT DEFAULT '[]',
     blacklist_words TEXT DEFAULT '[]'
   );
+  // Migration - Add ticket_button_name if not exists
+try {
+  db.run(`ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'`);
+} catch (e) {}
 
   CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
