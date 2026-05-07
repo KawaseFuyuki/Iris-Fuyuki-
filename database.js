@@ -30,35 +30,13 @@ process.on('exit', saveDb);
 process.on('SIGINT', () => { saveDb(); process.exit(0); });
 process.on('SIGTERM', () => { saveDb(); process.exit(0); });
 
-db.run(`
-  CREATE TABLE IF NOT EXISTS guild_config (
-    guild_id TEXT PRIMARY KEY,
-    prefix TEXT DEFAULT '&',
-    log_channel TEXT,
-    welcome_channel TEXT,
-    welcome_title TEXT,
-    welcome_description TEXT,
-    welcome_color TEXT DEFAULT '#FFD700',
-    welcome_image TEXT,
-    ticket_channel TEXT,
-    ticket_category TEXT,
-    ticket_role TEXT,
-    ticket_emoji TEXT DEFAULT 'ticket',
-    ticket_title TEXT,
-    ticket_description TEXT,
-    ticket_color TEXT DEFAULT '#FFD700',
-    ticket_button_name TEXT DEFAULT 'Create Ticket',
-    ticket_image TEXT,
-    ticket_buttons TEXT DEFAULT '[]',
-    antilink_enabled INTEGER DEFAULT 0,
-    antinuke_enabled INTEGER DEFAULT 0,
-    disabled_commands TEXT DEFAULT '[]',
-    blacklist_words TEXT DEFAULT '[]'
-  );
-  // Migration - Add ticket_button_name if not exists
+db.run("CREATE TABLE IF NOT EXISTS guild_config (guild_id TEXT PRIMARY KEY, prefix TEXT DEFAULT '&', log_channel TEXT, welcome_channel TEXT, welcome_title TEXT, welcome_description TEXT, welcome_color TEXT DEFAULT '#FFD700', welcome_image TEXT, ticket_channel TEXT, ticket_category TEXT, ticket_role TEXT, ticket_emoji TEXT DEFAULT 'ticket', ticket_title TEXT, ticket_description TEXT, ticket_color TEXT DEFAULT '#FFD700', ticket_button_name TEXT DEFAULT 'Create Ticket', ticket_image TEXT, ticket_buttons TEXT DEFAULT '[]', antilink_enabled INTEGER DEFAULT 0, antinuke_enabled INTEGER DEFAULT 0, disabled_commands TEXT DEFAULT '[]', blacklist_words TEXT DEFAULT '[]')");
+
 try {
-  db.run(`ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'`);
+  db.run("ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'");
 } catch (e) {}
+
+module.exports = db;
 
   CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
