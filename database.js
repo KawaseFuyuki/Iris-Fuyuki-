@@ -36,7 +36,6 @@ try {
   db.run("ALTER TABLE guild_config ADD COLUMN ticket_button_name TEXT DEFAULT 'Create Ticket'");
 } catch (e) {}
 
-module.exports = db;
 
   CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
