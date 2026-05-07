@@ -126,13 +126,7 @@ if (config.ticket_channel) {
     await ch.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(mainBtn,...extraBtns)] });
   } catch {}
 }
-            const bb = new ButtonBuilder().setCustomId(`ticket_extra_${i}`).setLabel(b.label).setStyle(ButtonStyle.Secondary);
-            if (b.emoji) bb.setEmoji(b.emoji);
-            return bb;
-          });
-          await ch.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(mainBtn, ...extraBtns)] });
-        } catch {}
-      }
+            
       return interaction.reply({ embeds: [successEmbed(`Button "${label}" added!`)], ephemeral: true });
     }
 
