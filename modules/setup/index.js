@@ -95,7 +95,7 @@ export async function handleSlash(interaction) {
         ticket_channel: channel.id, ticket_category: category,
         ticket_role: role?.id || null, ticket_emoji: emoji,
         ticket_title: title, ticket_description: description,
-        ticket_color: color, ticket_image: image, ticket_buttons: []
+        ticket_color: color, ticket_image: image, ticket_buttons: getGuildConfig(guild.id)?.ticket_buttons || []
       });
 
       const embed = makeEmbed({ title, description, color: parseHex(color), image });
