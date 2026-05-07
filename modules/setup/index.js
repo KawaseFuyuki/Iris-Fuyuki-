@@ -87,6 +87,7 @@ export async function handleSlash(interaction) {
       const category = interaction.options.getString('category') || null;
       const role = interaction.options.getRole('role') || null;
       const emoji = interaction.options.getString('emoji') || '🎫';
+      const buttonName = interaction.options.getString('button_name') || 'Create Ticket';
       const color = interaction.options.getString('color') || '#FFD700';
       const image = interaction.options.getString('image') || null;
 
@@ -98,7 +99,7 @@ export async function handleSlash(interaction) {
       });
 
       const embed = makeEmbed({ title, description, color: parseHex(color), image });
-      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel('Create Ticket').setEmoji(emoji).setStyle(ButtonStyle.Primary);
+      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel('buttonname').setEmoji(emoji).setStyle(ButtonStyle.Primary);
       await channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(btn)] });
       return interaction.reply({ embeds: [successEmbed(`Ticket panel sent to ${channel}!`)], ephemeral: true });
     }
