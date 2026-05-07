@@ -99,7 +99,7 @@ export async function handleSlash(interaction) {
       });
 
       const embed = makeEmbed({ title, description, color: parseHex(color), image });
-      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel('buttonname').setEmoji(emoji).setStyle(ButtonStyle.Primary);
+      const btn = new ButtonBuilder().setCustomId('ticket_create').setLabel(buttonname).setEmoji(emoji).setStyle(ButtonStyle.Primary);
       await channel.send({ embeds: [embed], components: [new ActionRowBuilder().addComponents(btn)] });
       return interaction.reply({ embeds: [successEmbed(`Ticket panel sent to ${channel}!`)], ephemeral: true });
     }
