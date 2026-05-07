@@ -43,7 +43,7 @@ db.run(`
     ticket_channel TEXT,
     ticket_category TEXT,
     ticket_role TEXT,
-    ticket_emoji TEXT DEFAULT '🎫',
+    ticket_emoji TEXT DEFAULT 'ticket',
     ticket_title TEXT,
     ticket_description TEXT,
     ticket_color TEXT DEFAULT '#FFD700',
