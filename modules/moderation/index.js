@@ -415,3 +415,51 @@ export async function handleUserUpdate(oldUser, newUser, client) {
     }
   }
 }
+// ================= BOT LOCK COMMANDS =================
+// &not = Lock all bots, &allow = Unlock all bots
+
+const { PermissionFlagsBits } = require('discord.js');
+
+exports.not = {
+    name: 'not',
+    description: 'Lock ALL BOTS in this channel',
+    async execute(message) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+            return message.reply("❌ You need `Manage Channels` permission to use this command.");
+        }
+
+        const channel = message.channel;
+        // Filter all bots except your own bot
+        const bots = message.guild.members.cache.filter(member => member.user.bot && member.id !== message.client.user.id);
+
+        if (bots.size === 0) return message.reply("❌ No other bots found in this server.");
+
+        for (const [id, bot] of bots) {
+            await channel.permissionOverwrites.edit(bot, { SendMessages: false });
+        }
+
+        await message.reply(`🔒 Locked **${bots.size} bots** in ${channel}. No bot can send messages here now.`);
+    },
+}
+
+exports.allow = {
+    name: 'allow',
+    description: 'Unlock ALL BOTS in this channel',
+    async execute(message) {
+        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+            return message.reply("❌ You need `Manage Channels` permission to use this command.");
+        }
+
+        const channel = message.channel;
+        const bots = message.guild.members.cache.filter(member => member.user.bot && member.id !== message.client.user.id);
+
+        if (bots.size === 0) return message.reply("❌ No other bots found in this server.");
+
+        for (const [id, bot] of bots) {
+            await channel.permissionOverwrites.edit(bot, { SendMessages: true });
+        }
+
+        await message.reply(`🔓 Unlocked **${bots.size} bots** in ${channel}. All bots can send messages here now.`);
+    },
+}
+// ================= END BOT LOCK =================
