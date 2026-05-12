@@ -1,6 +1,6 @@
 import { dbq, getGuildConfig, setGuildConfig } from '../../database.js';
 import { makeEmbed, errorEmbed, successEmbed, isMod, isAdmin, parseTime, formatDuration } from '../../utils.js';
-
+import { PermissionFlagsBits } from 'discord.js';
 export const prefixCommands = {
   'antilink': cmdAntilink,
   'antinuke': cmdAntinuke,
@@ -21,6 +21,8 @@ export const prefixCommands = {
   'enable': cmdEnable,
   'logs': cmdLogs,
   'snipe': cmdSnipe,
+  'not': cmdBotLock,
+  'allow': cmdBotUnlock,
 };
 
 async function cmdAntilink(message, args, config) {
@@ -415,51 +417,53 @@ export async function handleUserUpdate(oldUser, newUser, client) {
     }
   }
 }
-// ================= BOT LOCK COMMANDS =================
-// &not = Lock all bots, &allow = Unlock all bots
-
-const { PermissionFlagsBits } = require('discord.js');
-
-exports.not = {
-    name: 'not',
-    description: 'Lock ALL BOTS in this channel',
-    async execute(message) {
-        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
-            return message.reply("❌ You need `Manage Channels` permission to use this command.");
-        }
-
-        const channel = message.channel;
-        // Filter all bots except your own bot
-        const bots = message.guild.members.cache.filter(member => member.user.bot && member.id !== message.client.user.id);
-
-        if (bots.size === 0) return message.reply("❌ No other bots found in this server.");
-
+// BOT LOCK COMMANDS - SPECIFIC + ALL BOTS
+async function cmdBotLock(message, args, config) {
+    if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        return message.reply({ embeds: [errorEmbed('You need Manage Channels permission.')] });
+    }
+    
+    const channel = message.channel;
+    const target = message.mentions.members.first();
+    
+    if (!target) {
+        const bots = message.guild.members.cache.filter(m => m.user.bot && m.id !== message.client.user.id);
+        if (bots.size === 0) return message.reply({ embeds: [errorEmbed('No other bots found.')] });
         for (const [id, bot] of bots) {
             await channel.permissionOverwrites.edit(bot, { SendMessages: false });
         }
-
-        await message.reply(`🔒 Locked **${bots.size} bots** in ${channel}. No bot can send messages here now.`);
-    },
+        return message.reply({ embeds: [successEmbed(`🔒 Locked ALL ${bots.size} bots in ${channel}`)] });
+    }
+    
+    if (!target.user.bot) {
+        return message.reply({ embeds: [errorEmbed('Mention a bot, not a user.')] });
+    }
+    
+    await channel.permissionOverwrites.edit(target, { SendMessages: false });
+    await message.reply({ embeds: [successEmbed(`🔒 Locked ${target} in ${channel}`)] });
 }
 
-exports.allow = {
-    name: 'allow',
-    description: 'Unlock ALL BOTS in this channel',
-    async execute(message) {
-        if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
-            return message.reply("❌ You need `Manage Channels` permission to use this command.");
-        }
-
-        const channel = message.channel;
-        const bots = message.guild.members.cache.filter(member => member.user.bot && member.id !== message.client.user.id);
-
-        if (bots.size === 0) return message.reply("❌ No other bots found in this server.");
-
+async function cmdBotUnlock(message, args, config) {
+    if (!message.member.permissions.has(PermissionFlagsBits.ManageChannels)) {
+        return message.reply({ embeds: [errorEmbed('You need Manage Channels permission.')] });
+    }
+    
+    const channel = message.channel;
+    const target = message.mentions.members.first();
+    
+    if (!target) {
+        const bots = message.guild.members.cache.filter(m => m.user.bot && m.id !== message.client.user.id);
+        if (bots.size === 0) return message.reply({ embeds: [errorEmbed('No other bots found.')] });
         for (const [id, bot] of bots) {
             await channel.permissionOverwrites.edit(bot, { SendMessages: true });
         }
-
-        await message.reply(`🔓 Unlocked **${bots.size} bots** in ${channel}. All bots can send messages here now.`);
-    },
+        return message.reply({ embeds: [successEmbed(`🔓 Unlocked ALL ${bots.size} bots in ${channel}`)] });
+    }
+    
+    if (!target.user.bot) {
+        return message.reply({ embeds: [errorEmbed('Mention a bot, not a user.')] });
+    }
+    
+    await channel.permissionOverwrites.edit(target, { SendMessages: true });
+    await message.reply({ embeds: [successEmbed(`🔓 Unlocked ${target} in ${channel}`)] });
 }
-// ================= END BOT LOCK =================
