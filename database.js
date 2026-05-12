@@ -37,33 +37,33 @@ try {
 } catch (e) {}
 
 
-  CREATE TABLE IF NOT EXISTS reaction_roles (
+  db.run(`CREATE TABLE IF NOT EXISTS reaction_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
     message_id TEXT NOT NULL,
     emoji TEXT NOT NULL,
     role_id TEXT NOT NULL
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS temp_roles (
+db.run(`CREATE TABLE IF NOT EXISTS temp_roles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     role_id TEXT NOT NULL,
     expires_at INTEGER NOT NULL
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS timers (
+db.run(`CREATE TABLE IF NOT EXISTS timers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
     message TEXT NOT NULL,
     interval_ms INTEGER NOT NULL,
     next_run INTEGER NOT NULL
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS invites (
+db.run(`CREATE TABLE IF NOT EXISTS invites (
     guild_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     inviter_id TEXT,
@@ -71,18 +71,18 @@ try {
     leave_count INTEGER DEFAULT 0,
     fake_count INTEGER DEFAULT 0,
     PRIMARY KEY (guild_id, user_id)
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS invite_uses (
+db.run(`CREATE TABLE IF NOT EXISTS invite_uses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     inviter_id TEXT NOT NULL,
     invitee_id TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
     type TEXT DEFAULT 'join'
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS giveaways (
+db.run(`CREATE TABLE IF NOT EXISTS giveaways (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
@@ -93,35 +93,35 @@ try {
     ended INTEGER DEFAULT 0,
     host_id TEXT NOT NULL,
     participants TEXT DEFAULT '[]'
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS warnings (
+db.run(`CREATE TABLE IF NOT EXISTS warnings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     moderator_id TEXT NOT NULL,
     reason TEXT,
     timestamp INTEGER NOT NULL
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS triggers (
+db.run(`CREATE TABLE IF NOT EXISTS triggers (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     trigger TEXT NOT NULL,
     response TEXT NOT NULL,
     type TEXT DEFAULT 'message'
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS tickets (
+db.run(`CREATE TABLE IF NOT EXISTS tickets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
     user_id TEXT NOT NULL,
     created_at INTEGER NOT NULL,
     closed INTEGER DEFAULT 0
-  );
+)`);
 
-  CREATE TABLE IF NOT EXISTS deleted_messages (
+db.run(`CREATE TABLE IF NOT EXISTS deleted_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     guild_id TEXT NOT NULL,
     channel_id TEXT NOT NULL,
@@ -129,8 +129,7 @@ try {
     author_tag TEXT NOT NULL,
     content TEXT,
     timestamp INTEGER NOT NULL
-  );
-`);
+)`);
 saveDb();
 
 // ─── Query Helpers ─────────────────────────────────────────────────────────────
